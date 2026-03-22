@@ -17,7 +17,7 @@ This version integrates **Supabase** for database and storage, making it product
 
 ## 🚀 Features
 
-* 📁 Upload & manage files بسهولة
+* 📁 Upload & manage files easily
 * 🏷️ Metadata-based organization (tags, categories, descriptions)
 * 🔍 File preview support (PDF, images, etc.)
 * ⚡ Fast and responsive UI (React + Vite)
@@ -37,21 +37,6 @@ This version integrates **Supabase** for database and storage, making it product
 | Storage    | Supabase Storage               |
 | Deployment | Docker & Docker Compose        |
 | Web Server | Nginx                          |
-
----
-
-## 📂 Project Structure
-
-```
-Meta-File-Box_Supabase/
-│
-├── frontend/        # React frontend
-├── backend/         # Django backend
-├── nginx/           # Nginx configuration
-├── docker-compose.yml
-├── .env             # Environment variables (not included in repo)
-└── README.md
-```
 
 ---
 
@@ -96,7 +81,6 @@ docker compose down
 ### Frontend
 
 ```bash
-cd frontend
 npm install
 npm run dev
 ```
@@ -123,12 +107,6 @@ python manage.py runserver
 
 ---
 
-## 📸 Screenshots (Add this later)
-
-> Add UI screenshots here to improve recruiter visibility
-
----
-
 ## 📌 Future Improvements
 
 * 🔐 User authentication (JWT / OAuth)
@@ -149,11 +127,3 @@ This project is licensed under the **MIT License**.
 **Shanmugaraj**
 BSc Computer Science Student
 Aspiring Python Full Stack Developer
-
-
-
-If you want next:
-
-* I’ll generate **README badges (cool GitHub UI look)**
-* Add **project screenshots section properly**
-* Help you write **resume line for this project** 🚀

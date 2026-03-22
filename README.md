@@ -1,6 +1,4 @@
-Here’s a **clean, professional, recruiter-friendly README** — optimized for GitHub visibility, clarity, and impact 👇
 
----
 
 # 📦 Meta File Box (Supabase Edition)
 
@@ -150,27 +148,9 @@ This project is licensed under the **MIT License**.
 
 **Shanmugaraj**
 BSc Computer Science Student
-Aspiring Full Stack Developer
+Aspiring Python Full Stack Developer
 
----
 
-## ⭐ Why this project stands out
-
-* Real-world full-stack architecture
-* Cloud + Docker + Production setup
-* Clean separation of frontend/backend
-* Practical use-case (file management system)
-
----
-
-🔥 **Tip:**
-Add this next to boost your profile:
-
-* Screenshots
-* Live demo (even temporary)
-* Short demo video
-
----
 
 If you want next:
 

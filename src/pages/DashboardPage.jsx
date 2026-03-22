@@ -8,6 +8,8 @@ import { useFiles } from '../hooks/useFiles';
 import { getCategoryStyles } from '../utils/fileHelpers';
 import { useTheme } from '../hooks/useTheme';
 
+import { useAuth } from '../hooks/useAuth';
+
 const UI_TYPE_MAP = {
   'PDF': ['pdf'],
   'Images': ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp'],
@@ -22,6 +24,7 @@ const UI_TYPE_MAP = {
 
 export default function DashboardPage() {
   const { theme } = useTheme();
+  const { isAuthenticated, executeProtectedAction } = useAuth();
   const { files, loading, error, toggleFavourite } = useFiles();
   const location = useLocation();
   const navigate = useNavigate();
@@ -136,7 +139,7 @@ export default function DashboardPage() {
 
   const handleCloseFolder = () => {
     if (activeDrillDownFav) navigate('?filter=favourites');
-    else navigate('/');
+    else navigate('/dashboard');
   };
 
   // Determines if we are actively searching (so we just show a flat list)
@@ -146,16 +149,6 @@ export default function DashboardPage() {
     return (
       <div className="loading-container">
         <div className="spinner" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="empty-state">
-        <FiInbox />
-        <h3>Could not load files</h3>
-        <p>{error}</p>
       </div>
     );
   }
@@ -186,6 +179,43 @@ export default function DashboardPage() {
     );
   }
 
+  // View: Guest (Unauthenticated)
+  if (!isAuthenticated && !loading) {
+    return (
+      <div className="dashboard-page">
+        <div className="dashboard-header">
+          <div>
+            <h1 className="page-title">Welcome to Meta File Box</h1>
+            <p className="page-subtitle">The ultimate space for your secure files and metadata.</p>
+          </div>
+        </div>
+        <div className="empty-dashboard">
+          <div className="empty-dashboard-icon">
+            <FiUploadCloud />
+          </div>
+          <h2>Access Your Personal Vault</h2>
+          <p>Login or create an account to start uploading, organizing, and managing your files with rich metadata.</p>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => executeProtectedAction(() => {})}
+          >
+            Get Started for Free
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="empty-state">
+        <FiInbox />
+        <h3>Could not load files</h3>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-header">
@@ -194,9 +224,13 @@ export default function DashboardPage() {
           <p className="page-subtitle">Manage, search, and organize your files.</p>
         </div>
         {!isActivelyFiltering && filtered.length > 0 && (
-          <Link to="/upload" className="btn btn-primary" style={{ padding: '10px 20px' }}>
+          <button 
+            className="btn btn-primary" 
+            style={{ padding: '10px 20px' }}
+            onClick={() => executeProtectedAction(() => navigate('/dashboard/upload'))}
+          >
             <FiUploadCloud /> Upload New File
-          </Link>
+          </button>
         )}
       </div>
 
@@ -212,7 +246,7 @@ export default function DashboardPage() {
               : 'Upload your first file to get started.'}
           </p>
           {(!isActivelyFiltering && !filters.showFavourites) && (
-            <Link to="/upload" className="btn btn-primary">
+            <Link to="/dashboard/upload" className="btn btn-primary">
               <FiUploadCloud />
               Upload File
             </Link>

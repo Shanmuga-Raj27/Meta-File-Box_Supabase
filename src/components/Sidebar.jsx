@@ -1,17 +1,19 @@
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FiGrid, FiUploadCloud, FiFolder, FiMenu, FiX, FiClock, FiChevronLeft, FiChevronRight, FiHeart } from 'react-icons/fi';
 import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 const navItems = [
-  { to: '/', label: 'Dashboard', icon: <FiGrid /> },
-  { to: '/recent', action: '?filter=recent', label: 'Recently Opened', icon: <FiClock /> },
-  { to: '/favourites', action: '?filter=favourites', label: 'Favourites', icon: <FiHeart /> },
-  { to: '/upload', label: 'Upload File', icon: <FiUploadCloud /> },
+  { to: '/dashboard', label: 'Dashboard', icon: <FiGrid />, public: true },
+  { to: '/dashboard', action: '?filter=recent', label: 'Recently Opened', icon: <FiClock /> },
+  { to: '/dashboard', action: '?filter=favourites', label: 'Favourites', icon: <FiHeart /> },
+  { to: '/dashboard/upload', label: 'Upload File', icon: <FiUploadCloud /> },
 ];
 
 export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { executeProtectedAction } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -51,12 +53,23 @@ export default function Sidebar() {
           {navItems.map((item) => {
             // Using a button/custom Link approach for Dashboard filters
             const isFilterLink = !!item.action;
-            
+
             const handleClick = (e) => {
+              e.preventDefault();
               setMobileOpen(false);
-              if (isFilterLink) {
-                e.preventDefault();
-                navigate(item.action); // Navigates to /?filter=...
+              
+              const action = () => {
+                if (isFilterLink) {
+                  navigate(item.action);
+                } else {
+                  navigate(item.to);
+                }
+              };
+
+              if (item.public) {
+                action();
+              } else {
+                executeProtectedAction(action);
               }
             };
 
@@ -65,25 +78,26 @@ export default function Sidebar() {
               : location.pathname === item.to && !location.search;
 
             return (
-              <NavLink
+              <a
                 key={item.label}
-                to={isFilterLink ? item.action : item.to}
+                href={isFilterLink ? item.action : item.to}
                 className={`sidebar-link ${isActive ? 'active' : ''}`}
                 onClick={handleClick}
                 title={isCollapsed ? item.label : undefined}
                 style={{
-                  justifyContent: isCollapsed ? 'center' : 'flex-start'
+                  justifyContent: isCollapsed ? 'center' : 'flex-start',
+                  cursor: 'pointer'
                 }}
               >
                 {item.icon}
                 {!isCollapsed && <span>{item.label}</span>}
-              </NavLink>
+              </a>
             );
           })}
         </nav>
 
         {/* Collapser Toggle */}
-        <button 
+        <button
           className="sidebar-collapse-btn"
           onClick={() => setIsCollapsed(!isCollapsed)}
           style={{

@@ -12,7 +12,7 @@ export default function FileCard({ file }) {
   const ext = (file.fileName || '').split('.').pop().toUpperCase();
 
   return (
-    <Link to={`/preview/${file.id}`} state={{ from: location }} className="file-card" id={`file-card-${file.id}`}>
+    <Link to={`/dashboard/preview/${file.id}`} state={{ from: location }} className="file-card" id={`file-card-${file.id}`}>
       <div className="file-card-header">
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flex: 1 }}>
           <div

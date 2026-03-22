@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiUploadCloud, FiFile, FiCheck } from 'react-icons/fi';
-import { uploadFile, saveFileMetadata } from '../services/supabase';
+import { uploadFile } from '../services/supabase';
+import { fileService } from '../services/api';
 
 const CATEGORIES = [
   'Documents',
@@ -15,9 +16,35 @@ const CATEGORIES = [
   'Other',
 ];
 
+import { useAuth } from '../hooks/useAuth';
+
 export default function UploadPage() {
   const navigate = useNavigate();
+  const { isAuthenticated, executeProtectedAction } = useAuth();
   const fileInputRef = useRef(null);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="upload-page">
+        <h1 className="page-title">Upload File</h1>
+        <p className="page-subtitle">Add a new file with metadata to your library.</p>
+        <div className="empty-dashboard" style={{ marginTop: 40 }}>
+          <div className="empty-dashboard-icon">
+            <FiUploadCloud />
+          </div>
+          <h2>Authentication Required</h2>
+          <p>Please login or create an account to start uploading files to your personal vault.</p>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => executeProtectedAction(() => {})}
+            style={{ marginTop: 16 }}
+          >
+            Sign In to Upload
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
@@ -62,7 +89,7 @@ export default function UploadPage() {
       const fileURL = await uploadFile(file, (p) => setProgress(p));
       const ext = file.name.split('.').pop().toLowerCase();
 
-      await saveFileMetadata({
+      await fileService.createFile({
         fileName: fileName || file.name,
         tags: tags
           .split(',')
@@ -70,12 +97,12 @@ export default function UploadPage() {
           .filter(Boolean),
         category: category || 'Other',
         description,
-        fileURL,
+        fileURL: fileURL,
         fileType: ext,
       });
 
       showToast('File uploaded successfully!');
-      setTimeout(() => navigate('/'), 1200);
+      setTimeout(() => navigate('/dashboard'), 1200);
     } catch (err) {
       console.error(err);
       showToast(err.message || 'Upload failed', 'error');
